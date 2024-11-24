@@ -1,0 +1,20 @@
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+
+
+from collections import defaultdict
+
+def group_anagrams(strs):
+    anagrams = defaultdict(list)  # Create a defaultdict for grouping anagrams
+
+    for s in strs:
+        # Use the sorted tuple of the string as the key
+        sorted_key = tuple(sorted(s))
+        anagrams[sorted_key].append(s)
+
+    # Return the grouped anagrams as a list of lists
+    return list(anagrams.values())
+
+# Example usage:
+strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+result = group_anagrams(strs)
+print(result)
