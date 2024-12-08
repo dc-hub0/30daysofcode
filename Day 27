@@ -1,0 +1,50 @@
+You are given a 0-indexed 2D integer array of events where events[i] = [startTimei, endTimei, valuei]. The ith event starts at startTimei and ends at endTimei, and if you attend this event, you will receive a value of valuei. You can choose at most two non-overlapping events to attend such that the sum of their values is maximized.
+
+Return this maximum sum.
+
+CODE:
+class Solution {
+    public int maxTwoEvents(int[][] events) {
+         Arrays.sort(events, Comparator.comparingInt(a -> a[1]));
+
+        int n = events.length;
+        int[] dp = new int[n];
+        dp[0] = events[0][2];
+
+        // Fill dp array with the maximum value achievable up to each event
+        for (int i = 1; i < n; i++) {
+            dp[i] = Math.max(dp[i - 1], events[i][2]);
+        }
+
+        // Calculate the maximum sum of two non-overlapping events
+        int maxSum = dp[0];
+        for (int i = 1; i < n; i++) {
+            int nonOverlapIndex = findNonOverlapping(events, i);
+            int sum = events[i][2];
+            if (nonOverlapIndex != -1) {
+                sum += dp[nonOverlapIndex];
+            }
+            maxSum = Math.max(maxSum, sum);
+        }
+
+        return maxSum;
+    }
+
+    // Helper method to find the rightmost non-overlapping event
+    private int findNonOverlapping(int[][] events, int index) {
+        int left = 0, right = index - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (events[mid][1] < events[index][0]) {
+                if (mid + 1 < index && events[mid + 1][1] < events[index][0]) {
+                    left = mid + 1;
+                } else {
+                    return mid;
+                }
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1; // No non-overlapping event found
+    }
+}
